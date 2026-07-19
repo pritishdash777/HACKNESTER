@@ -335,3 +335,97 @@ img,svg{display:block}
   *{animation:none!important;transition:none!important}
   .reveal{opacity:1;transform:none}
 }
+/* About the Creator */
+.about-me {
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, #0f0f1a, #1a1a2e);
+    text-align: center;
+    border-top: 1px solid rgba(52, 229, 168, 0.15);
+}
+
+.about-me .container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.about-me h2 {
+    font-size: 2.8rem;
+    margin-bottom: 1.5rem;
+    
+    /* Gradient Text with better compatibility */
+    background: linear-gradient(90deg, #34e5a8, #4f6df5);
+    -webkit-background-clip: text;
+    background-clip: text;           /* Standard property */
+    -webkit-text-fill-color: transparent;
+    color: transparent;              /* Fallback */
+}
+
+.about-me p {
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: #d1d5db;
+}
+/* Enhanced Footer Social Links with Hover Animations */
+.footer-social {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.footer-social .social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #a3bffa;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 10px 18px;
+    border: 1px solid rgba(163, 191, 250, 0.2);
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-social .social-link svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover Animations */
+.footer-social .social-link:hover {
+    background: rgba(79, 109, 245, 0.12);
+    border-color: #4f6df5;
+    color: #ffffff;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(79, 109, 245, 0.15);
+}
+
+.footer-social .social-link:hover svg {
+    transform: scale(1.15) rotate(8deg);
+    fill: #4f6df5;
+}
+
+/* Shine effect on hover */
+.footer-social .social-link::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;
+    width: 40%;
+    height: 200%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.25),
+        transparent
+    );
+    transition: 0.7s;
+}
+
+.footer-social .social-link:hover::before {
+    left: 250%;
+}
