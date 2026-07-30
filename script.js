@@ -1,282 +1,155 @@
 const supabaseUrl = "https://yhipubroumcspclpybxz.supabase.co";
-const supabaseKey = "sb_publishable_OvHOiX9o3CPHIRqPEhvLow_JJJkCsPM";
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-(function () {
+const supabaseKey = "sb_publishable_OvHOiX9o3CPHIRqPEhvLow_JJJkCsPM";
+
+const supabaseClient = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
+(function(){
   "use strict";
 
-  // ─── Utilities ────────────────────────────────────────────────────────────
-  const $ = (sel, ctx = document) => ctx.querySelector(sel);
-  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+  // year
+  var y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
 
-  function debounce(fn, delay = 120) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn(...args), delay);
-    };
+  // navbar scroll state
+  var navbar = document.getElementById('navbar');
+  var backToTop = document.getElementById('backToTop');
+  function onScroll(){
+    var s = window.scrollY > 20;
+    navbar.classList.toggle('scrolled', s);
+    backToTop.classList.toggle('show', window.scrollY > 500);
   }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  backToTop.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
 
-  // ─── Year ─────────────────────────────────────────────────────────────────
-  const yearEl = $("#year");
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // ─── Navbar + Back-to-top ─────────────────────────────────────────────────
-  const navbar = $("#navbar");
-  const backToTop = $("#backToTop");
-
-  function onScroll() {
-    const scrolled = window.scrollY > 20;
-    navbar?.classList.toggle("scrolled", scrolled);
-    backToTop?.classList.toggle("show", window.scrollY > 500);
-  }
-
-  window.addEventListener("scroll", debounce(onScroll, 16), { passive: true });
-  onScroll();
-
-  backToTop?.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  // mobile menu
+  var burger = document.getElementById('hamburgerBtn');
+  var menu = document.getElementById('mobileMenu');
+  function closeMenu(){ menu.classList.remove('open'); burger.classList.remove('open'); burger.setAttribute('aria-expanded','false'); }
+  burger.addEventListener('click', function(){
+    var open = menu.classList.toggle('open');
+    burger.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', String(open));
   });
+  menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
 
-  // ─── Mobile menu ──────────────────────────────────────────────────────────
-  const burger = $("#hamburgerBtn");
-  const menu = $("#mobileMenu");
-
-  function closeMenu() {
-    menu?.classList.remove("open");
-    burger?.classList.remove("open");
-    burger?.setAttribute("aria-expanded", "false");
-  }
-
-  burger?.addEventListener("click", () => {
-    const open = menu?.classList.toggle("open");
-    burger?.classList.toggle("open", open);
-    burger?.setAttribute("aria-expanded", String(!!open));
-  });
-
-  menu?.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
-
-  // Close menu on Escape or outside click
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
-  });
-
-  // ─── Toast system ─────────────────────────────────────────────────────────
-  const toast = $("#toast");
-  const toastMsg = toast?.querySelector(".toast-message");
-  let toastTimer;
-
-  function showToast(msg, type = "info") {
-    if (!toast || !toastMsg) return;
+  // toast
+  var toast = document.getElementById('toast');
+  var toastMsg = toast.querySelector('.toast-message');
+  var toastTimer;
+  function showToast(msg){
     toastMsg.textContent = msg;
-    toast.dataset.type = type;
-    toast.classList.add("show");
+    toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 3400);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3200);
   }
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-toast]');
+    if(el){ e.preventDefault(); showToast(el.getAttribute('data-toast')); }
+  });
 
-  document.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-toast]");
-    if (el) {
-      e.preventDefault();
-      showToast(el.getAttribute("data-toast") || "Done!");
+  // modal
+  var modal = document.getElementById('createProjectModal');
+  function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){ b.addEventListener('click', openModal); });
+  document.querySelectorAll('[data-close-modal]').forEach(function(b){ b.addEventListener('click', closeModal); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); });
+  var projForm = document.getElementById('createProjectForm');
+  if(projForm) projForm.addEventListener('submit', function(e){ e.preventDefault(); closeModal(); showToast('Thanks! Project posting opens when hacknester launches.'); projForm.reset(); });
+
+  // forms
+  const createProjectForm = document.getElementById('createProjectForm');
+
+if (createProjectForm) {
+  createProjectForm.addEventListener('submit', async function(e) {
+
+    e.preventDefault();
+
+    const title =
+      document.getElementById('projTitle').value;
+
+    const category =
+      document.getElementById('projCategory').value;
+
+    const team_size =
+      parseInt(document.getElementById('projTeamSize').value) || 1;
+
+    const skills =
+      document.getElementById('projSkills').value;
+
+    const description =
+      document.getElementById('projDesc').value;
+
+    const { error } = await supabaseClient
+      .from('projects')
+      .insert([
+        {
+          title,
+          category,
+          team_size,
+          skills,
+          description
+        }
+      ]);
+
+    if (error) {
+      console.error(error);
+      showToast(error.message);
+    } else {
+      showToast('Project posted successfully!');
+      createProjectForm.reset();
+
+      // Optional: close modal automatically
+      const modal = document.getElementById('createProjectModal');
+      if (modal) modal.classList.remove('open');
     }
   });
-
-  // ─── Modal ────────────────────────────────────────────────────────────────
-  const modal = $("#createProjectModal");
-
-  function openModal() {
-    modal?.classList.add("open");
-    document.body.style.overflow = "hidden";
-    // Focus first input for accessibility
-    setTimeout(() => $("#projTitle")?.focus(), 80);
-  }
-
-  function closeModal() {
-    modal?.classList.remove("open");
-    document.body.style.overflow = "";
-  }
-
-  $$("[data-open-modal]").forEach((btn) => btn.addEventListener("click", openModal));
-  $$("[data-close-modal]").forEach((btn) => btn.addEventListener("click", closeModal));
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-  });
-
-  // Close modal when clicking the backdrop
-  modal?.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // ─── Form helpers ─────────────────────────────────────────────────────────
-  function setFormLoading(form, isLoading) {
-    const submitBtn = form.querySelector('[type="submit"]');
-    if (!submitBtn) return;
-    submitBtn.disabled = isLoading;
-    submitBtn.classList.toggle("loading", isLoading);
-    submitBtn.setAttribute("aria-busy", String(isLoading));
-  }
-
-  function validateProjectForm(data) {
-    if (!data.title?.trim()) return "Project title is required.";
-    if (data.title.trim().length < 3) return "Title must be at least 3 characters.";
-    if (!data.category) return "Please select a category.";
-    if (data.team_size < 1 || data.team_size > 50) return "Team size must be between 1 and 50.";
-    if (!data.description?.trim()) return "Description is required.";
-    if (data.description.trim().length < 20) return "Description should be at least 20 characters.";
-    return null;
-  }
-
-  // ─── Create Project form ──────────────────────────────────────────────────
-  const createProjectForm = $("#createProjectForm");
-
-  if (createProjectForm) {
-    createProjectForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const title = $("#projTitle")?.value?.trim() || "";
-      const category = $("#projCategory")?.value || "";
-      const team_size = parseInt($("#projTeamSize")?.value, 10) || 1;
-      const skills = $("#projSkills")?.value?.trim() || "";
-      const description = $("#projDesc")?.value?.trim() || "";
-
-      const payload = { title, category, team_size, skills, description };
-
-      const validationError = validateProjectForm(payload);
-      if (validationError) {
-        showToast(validationError, "error");
-        return;
-      }
-
-      setFormLoading(createProjectForm, true);
-
-      try {
-        const { error } = await supabaseClient
-        .from("projects")
-        .insert([payload]);
-
-        if (error) {
-          console.error("Insert error:", error);
-          showToast(error.message || "Failed to post project.", "error");
-          return;
-        }
-
-        console.log("Project created:", payload);
-        showToast("Project posted successfully! 🎉", "success");
-        createProjectForm.reset();
-        closeModal();
-
-        // Optionally refresh a projects list if it exists on the page
-        if (typeof window.refreshProjects === "function") {
-          window.refreshProjects();
-        }
-      } catch (err) {
-  console.error("Unexpected error:", err);
-  alert(JSON.stringify(err));
-  showToast(err.message || "Something went wrong.", "error");
 }
-      } finally {
-        setFormLoading(createProjectForm, false);
-      }
-    });
-  }
+  var waitlistForm = document.getElementById('waitlistForm');
 
-  // ─── FAQ Accordion ────────────────────────────────────────────────────────
-  $$(".faq-question").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const item = btn.closest(".faq-item");
-      const ans = item?.querySelector(".faq-answer");
-      if (!item || !ans) return;
+if (waitlistForm) {
+  waitlistForm.addEventListener('submit', async function(e) {
 
-      const isOpen = item.classList.toggle("open");
-      btn.setAttribute("aria-expanded", String(isOpen));
+    e.preventDefault();
 
-      // Smooth height animation
-      if (isOpen) {
-        ans.style.maxHeight = ans.scrollHeight + "px";
-        ans.style.opacity = "1";
-      } else {
-        ans.style.maxHeight = "0";
-        ans.style.opacity = "0";
-      }
+    var email =
+      waitlistForm.querySelector('input').value;
 
-      // Close other open FAQ items (optional accordion behavior)
-      $$(".faq-item.open").forEach((other) => {
-        if (other !== item) {
-          other.classList.remove("open");
-          const otherBtn = other.querySelector(".faq-question");
-          const otherAns = other.querySelector(".faq-answer");
-          otherBtn?.setAttribute("aria-expanded", "false");
-          if (otherAns) {
-            otherAns.style.maxHeight = "0";
-            otherAns.style.opacity = "0";
-          }
+    const { error } = await supabaseClient
+  .from('waitlist')
+      .insert([
+        {
+          email: email
         }
-      });
-    });
-  });
+      ]);
 
-  // ─── Reveal on scroll ─────────────────────────────────────────────────────
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in");
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-  );
-
-  $$(".reveal").forEach((el) => revealObserver.observe(el));
-
-  // ─── Optional: live character counter for description ─────────────────────
-  const descInput = $("#projDesc");
-  const descCounter = $("#descCounter"); // optional element
-
-  if (descInput && descCounter) {
-    const updateCounter = () => {
-      const len = descInput.value.length;
-      descCounter.textContent = `${len} characters`;
-      descCounter.classList.toggle("warn", len > 0 && len < 20);
-    };
-    descInput.addEventListener("input", updateCounter);
-    updateCounter();
-  }
-
-  // ─── Smooth active nav link highlighting ──────────────────────────────────
-  const sections = $$("section[id]");
-  const navLinks = $$(".nav-links a, #mobileMenu a");
-
-  function highlightNav() {
-    const scrollPos = window.scrollY + 120;
-    sections.forEach((section) => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
-      const id = section.getAttribute("id");
-      if (scrollPos >= top && scrollPos < top + height) {
-        navLinks.forEach((link) => {
-          link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
-        });
-      }
-    });
-  }
-
-  window.addEventListener("scroll", debounce(highlightNav, 50), { passive: true });
-  highlightNav();
-
-  // ─── Keyboard accessibility polish ────────────────────────────────────────
-  document.addEventListener("keydown", (e) => {
-    // Quick open create modal with Ctrl/Cmd + K
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-      e.preventDefault();
-      openModal();
+    if (error) {
+      console.error(error);
+      showToast('Database error.');
+    } else {
+      showToast("You're on the list — we'll be in touch soon.");
+      waitlistForm.reset();
     }
+
+  });
+}
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.closest('.faq-item');
+      var ans = item.querySelector('.faq-answer');
+      var open = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+      ans.style.maxHeight = open ? ans.scrollHeight + 'px' : '0';
+    });
   });
 
-  // ─── Init complete ────────────────────────────────────────────────────────
-  console.log("%cProject Hub ready", "color:#6ee7b7;font-weight:bold");
+  // reveal on scroll
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 })();
