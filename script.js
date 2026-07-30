@@ -2,7 +2,7 @@ const supabaseUrl = "https://yhipubroumcspclpybxz.supabase.co";
 
 const supabaseKey = "sb_publishable_OvHOiX9o3CPHIRqPEhvLow_JJJkCsPM";
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   supabaseUrl,
   supabaseKey
 );
@@ -70,8 +70,8 @@ if (waitlistForm) {
     var email =
       waitlistForm.querySelector('input').value;
 
-    const { error } = await supabase
-      .from('waitlist')
+    const { error } = await supabaseClient
+  .from('waitlist')
       .insert([
         {
           email: email
