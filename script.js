@@ -60,6 +60,53 @@ const supabaseClient = window.supabase.createClient(
   if(projForm) projForm.addEventListener('submit', function(e){ e.preventDefault(); closeModal(); showToast('Thanks! Project posting opens when hacknester launches.'); projForm.reset(); });
 
   // forms
+  const createProjectForm = document.getElementById('createProjectForm');
+
+if (createProjectForm) {
+  createProjectForm.addEventListener('submit', async function(e) {
+
+    e.preventDefault();
+
+    const title =
+      document.getElementById('projTitle').value;
+
+    const category =
+      document.getElementById('projCategory').value;
+
+    const team_size =
+      parseInt(document.getElementById('projTeamSize').value) || 1;
+
+    const skills =
+      document.getElementById('projSkills').value;
+
+    const description =
+      document.getElementById('projDesc').value;
+
+    const { error } = await supabaseClient
+      .from('projects')
+      .insert([
+        {
+          title,
+          category,
+          team_size,
+          skills,
+          description
+        }
+      ]);
+
+    if (error) {
+      console.error(error);
+      showToast(error.message);
+    } else {
+      showToast('Project posted successfully!');
+      createProjectForm.reset();
+
+      // Optional: close modal automatically
+      const modal = document.getElementById('createProjectModal');
+      if (modal) modal.classList.remove('open');
+    }
+  });
+}
   var waitlistForm = document.getElementById('waitlistForm');
 
 if (waitlistForm) {
