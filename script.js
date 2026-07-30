@@ -1,4 +1,11 @@
+const supabaseUrl = "https://yhipubroumcspclpybxz.supabase.co";
 
+const supabaseKey = "sb_publishable_OvHOiX9o3CPHIRqPEhvLow_JJJkCsPM";
+
+const supabase = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
 (function(){
   "use strict";
 
@@ -53,10 +60,34 @@
   if(projForm) projForm.addEventListener('submit', function(e){ e.preventDefault(); closeModal(); showToast('Thanks! Project posting opens when hacknester launches.'); projForm.reset(); });
 
   // forms
-  ['waitlistForm','newsletterForm'].forEach(function(id){
-    var f = document.getElementById(id);
-    if(f) f.addEventListener('submit', function(e){ e.preventDefault(); showToast("You're on the list — we'll be in touch soon."); f.reset(); });
+  var waitlistForm = document.getElementById('waitlistForm');
+
+if (waitlistForm) {
+  waitlistForm.addEventListener('submit', async function(e) {
+
+    e.preventDefault();
+
+    var email =
+      waitlistForm.querySelector('input').value;
+
+    const { error } = await supabase
+      .from('waitlist')
+      .insert([
+        {
+          email: email
+        }
+      ]);
+
+    if (error) {
+      console.error(error);
+      showToast('Database error.');
+    } else {
+      showToast("You're on the list — we'll be in touch soon.");
+      waitlistForm.reset();
+    }
+
   });
+}
 
   // FAQ accordion
   document.querySelectorAll('.faq-question').forEach(function(btn){
