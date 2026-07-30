@@ -163,7 +163,7 @@ const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
           return;
         }
 
-        console.log("Project created:", data);
+        console.log("Project created:", payload);
         showToast("Project posted successfully! 🎉", "success");
         createProjectForm.reset();
         closeModal();
@@ -173,8 +173,10 @@ const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
           window.refreshProjects();
         }
       } catch (err) {
-        console.error("Unexpected error:", err);
-        showToast("Something went wrong. Please try again.", "error");
+  console.error("Unexpected error:", err);
+  alert(JSON.stringify(err));
+  showToast(err.message || "Something went wrong.", "error");
+}
       } finally {
         setFormLoading(createProjectForm, false);
       }
