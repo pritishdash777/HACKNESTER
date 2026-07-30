@@ -153,11 +153,9 @@ const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
       setFormLoading(createProjectForm, true);
 
       try {
-        const { data, error } = await supabaseClient
-          .from("projects")
-          .insert([payload])
-          .select()
-          .single();
+        const { error } = await supabaseClient
+        .from("projects")
+        .insert([payload]);
 
         if (error) {
           console.error("Insert error:", error);
