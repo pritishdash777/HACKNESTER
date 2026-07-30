@@ -465,6 +465,50 @@
 <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
   <svg class="icon"><use href="#icon-arrow-up"></use></svg>
 </button>
+
+<!-- ========== AI CHATBOT ========== -->
+<div id="hn-chatbot" class="hn-chatbot" aria-live="polite">
+  <!-- Floating toggle button -->
+  <button type="button" id="hn-chat-toggle" class="hn-chat-toggle" aria-label="Open HackNester AI assistant" aria-expanded="false">
+    <svg class="hn-chat-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg class="hn-chat-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- Chat window -->
+  <div id="hn-chat-window" class="hn-chat-window" role="dialog" aria-label="HackNester AI chat" hidden>
+    <header class="hn-chat-header">
+      <div class="hn-chat-header-left">
+        <div class="hn-chat-avatar">HN</div>
+        <div>
+          <strong>HackNester AI</strong>
+          <span class="hn-chat-status">Online • Ask me anything</span>
+        </div>
+      </div>
+      <button type="button" id="hn-chat-close" class="hn-chat-close" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </header>
+
+    <div id="hn-chat-messages" class="hn-chat-messages">
+      <!-- Welcome message injected by JS -->
+    </div>
+
+    <form id="hn-chat-form" class="hn-chat-form">
+      <input type="text" id="hn-chat-input" placeholder="Ask about teams, hackathons, startups..." autocomplete="off" maxlength="1000" required aria-label="Message">
+      <button type="submit" id="hn-chat-send" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+<!-- ========== END AI CHATBOT ========== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
 </body>
