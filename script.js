@@ -213,9 +213,48 @@ const supabaseClient = window.supabase
     });
   }
 
-  handleEmailForm($("#waitlistForm"), "waitlist");
-  handleEmailForm($("#newsletterForm"), "newsletter");
+  // Early Access form → Netlify function (insert + automated emails)
+  const waitlistForm = $("#waitlistForm");
+  if (waitlistForm) {
+    waitlistForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
+      const input = waitlistForm.querySelector('input[type="email"]');
+      const email = (input?.value || "").trim().toLowerCase();
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast("Please enter a valid university email.", "error");
+        input?.focus();
+        return;
+      }
+
+      setFormLoading(waitlistForm, true);
+      try {
+        const res = await fetch("/.netlify/functions/waitlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.error || "Request failed");
+        }
+
+        showToast("You're on the list! Check your inbox for a welcome email.", "success");
+        waitlistForm.reset();
+      } catch (err) {
+        console.error("[waitlist] error:", err);
+        showToast(err.message || "Something went wrong. Please try again.", "error");
+      } finally {
+        setFormLoading(waitlistForm, false);
+      }
+    });
+  }
+
+  // Newsletter stays on direct Supabase insert
+  handleEmailForm($("#newsletterForm"), "newsletter");
   // ─── Create Project form ────────────────────────────────────────────────
   const createProjectForm = $("#createProjectForm");
 

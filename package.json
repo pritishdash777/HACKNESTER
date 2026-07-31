@@ -1,0 +1,24 @@
+{
+  "name": "hacknester",
+  "version": "1.0.0",
+  "description": "hacknester is a frontend MVP of a student collaboration platform where university students can discover teammates, showcase skills, and form project teams for hackathons, startups, research work, and open-source development. Built to solve one of the biggest challenges in college: finding the right people to build great things with.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pritishdash777/HACKNESTER.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pritishdash777/HACKNESTER/issues"
+  },
+  "homepage": "https://github.com/pritishdash777/HACKNESTER#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.111.0"
+  }
+}
