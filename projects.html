@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Projects — hacknester</title>
+<meta name="description" content="Discover projects posted by the HackNester community.">
+<meta name="theme-color" content="#0b0c14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234F6DF5'/%3E%3Ccircle cx='16' cy='9' r='3.6' fill='%23fff'/%3E%3Ccircle cx='9' cy='22' r='3.6' fill='%2334E5A8'/%3E%3Ccircle cx='23' cy='22' r='3.6' fill='%2334E5A8'/%3E%3Cpath d='M16 12.6L10.6 19M16 12.6L21.4 19M11.6 22H20.4' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.projects-page{padding:120px 0 80px;position:relative;overflow:hidden}
+.projects-page-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.projects-page .container{position:relative;z-index:1}
+.projects-header{text-align:center;max-width:640px;margin:0 auto 40px}
+.projects-header .section-title{margin-bottom:10px}
+.projects-header .section-subtitle{margin:0}
+.projects-toolbar{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+.projects-search-wrap{position:relative;max-width:520px;width:100%;margin:0 auto}
+.projects-search-wrap .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted);pointer-events:none}
+.projects-search{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px 14px 44px;color:var(--text);font-family:inherit;font-size:15px}
+.projects-search:focus{outline:none;border-color:var(--primary)}
+.projects-search::placeholder{color:var(--muted)}
+.category-filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.category-filters .filter-btn{font-family:inherit;font-weight:500;font-size:13.5px;padding:8px 16px;border-radius:999px;cursor:pointer;background:var(--surface-2);color:var(--muted);border:1px solid var(--border);transition:color .2s,border-color .2s,background .2s}
+.category-filters .filter-btn:hover{color:var(--text);border-color:var(--border-strong)}
+.category-filters .filter-btn.active{background:var(--primary-soft);color:#8ba0ff;border-color:rgba(79,109,245,.35)}
+.projects-feed{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.projects-feed .project-card{display:flex;flex-direction:column}
+.projects-feed .project-meta{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:14px;margin-bottom:18px;font-size:13px;color:var(--muted)}
+.projects-feed .project-actions{margin-top:auto}
+.projects-empty,.projects-loading,.projects-error{grid-column:1/-1;text-align:center;padding:48px 24px;color:var(--muted);font-size:1rem}
+.projects-empty .btn,.projects-error .btn{margin-top:16px}
+@media(max-width:900px){.projects-feed{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.projects-page{padding:100px 0 64px}.projects-feed{grid-template-columns:1fr}}
+.nav-link.active{color:var(--text)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#4F6DF5"/><stop offset="55%" stop-color="#22C7B8"/><stop offset="100%" stop-color="#34E5A8"/>
+</linearGradient>
+</defs>
+<symbol id="icon-logo" viewBox="0 0 32 32">
+<circle cx="16" cy="9" r="4" fill="url(#logoGrad)"/><circle cx="8" cy="23" r="4" fill="url(#logoGrad)"/><circle cx="24" cy="23" r="4" fill="url(#logoGrad)"/>
+<path d="M16 13L9.5 19.5M16 13L22.5 19.5M11.5 23H20.5" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+</symbol>
+<symbol id="icon-github" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.230.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></symbol>
+<symbol id="icon-linkedin" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="3" y="9" width="4" height="12" rx="0.5"/><circle cx="5" cy="4" r="2.5"/><path d="M11 9h4v2.2c.7-1.4 2.1-2.5 4.2-2.5 4 0 4.8 2.5 4.8 5.9V21h-4v-5.7c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3v5.8h-4V9z"/></symbol>
+<symbol id="icon-twitter" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-6.9L4.4 22H1.3l8.1-9.3L1 2h7.1l4.9 6.3L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></symbol>
+<symbol id="icon-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+<symbol id="icon-arrow-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol>
+<symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+<symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+<symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+</svg>
+
+<header class="navbar" id="navbar">
+  <div class="container navbar-inner">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark"><use href="#icon-logo"></use></svg>
+      <span>hacknester</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="projects.html" class="nav-link active">Explore Projects</a>
+      <a href="index.html#features" class="nav-link">Features</a>
+      <a href="index.html#how" class="nav-link">How It Works</a>
+      <a href="index.html#projects" class="nav-link">Project Ideas</a>
+      <a href="index.html#faq" class="nav-link">FAQ</a>
+    </nav>
+    <div class="navbar-actions">
+      <button type="button" class="btn btn-ghost btn-sm" data-toast="Sign-in isn\'t available yet — hacknester is in early access.">Log In</button>
+      <button type="button" class="btn btn-primary btn-sm" data-toast="Thanks for your interest! Join the early-access list on the home page.">Get Started</button>
+      <button type="button" class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <nav class="mobile-nav-links" aria-label="Mobile">
+    <a href="projects.html">Explore Projects</a>
+    <a href="index.html#features">Features</a>
+    <a href="index.html#how">How It Works</a>
+    <a href="index.html#projects">Project Ideas</a>
+    <a href="index.html#faq">FAQ</a>
+  </nav>
+  <div class="mobile-menu-actions">
+    <button type="button" class="btn btn-ghost" data-toast="Sign-in isn\'t available yet — hacknester is in early access.">Log In</button>
+    <button type="button" class="btn btn-primary" data-toast="Thanks for your interest! Join the early-access list on the home page.">Get Started</button>
+  </div>
+</div>
+
+<main>
+<section class="projects-page">
+  <div class="projects-page-bg" aria-hidden="true">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
+  <div class="container">
+    <div class="projects-header reveal">
+      <span class="eyebrow">// project marketplace</span>
+      <h1 class="section-title">Explore Projects</h1>
+      <p class="section-subtitle">Discover projects posted by the HackNester community</p>
+    </div>
+    <div class="projects-toolbar reveal">
+      <div class="projects-search-wrap">
+        <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+        <input type="search" id="projectSearch" class="projects-search" placeholder="Search projects by title, skills, or description" aria-label="Search projects by title, skills, or description" autocomplete="off">
+      </div>
+      <div class="category-filters" role="group" aria-label="Filter by category">
+        <button type="button" class="filter-btn active" data-filter="all">All</button>
+        <button type="button" class="filter-btn" data-filter="AI">AI</button>
+        <button type="button" class="filter-btn" data-filter="Web Dev">Web Dev</button>
+        <button type="button" class="filter-btn" data-filter="App Dev">App Dev</button>
+        <button type="button" class="filter-btn" data-filter="Blockchain">Blockchain</button>
+        <button type="button" class="filter-btn" data-filter="Cybersecurity">Cybersecurity</button>
+      </div>
+    </div>
+    <div class="projects-feed" id="projectsFeed" aria-live="polite">
+      <div class="projects-loading">Loading projects…</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><svg class="logo-mark"><use href="#icon-logo"></use></svg><span>hacknester</span></a>
+        <p>Built by students, for students. Find your team and ship something extraordinary.</p>
+        <div class="footer-social">
+          <a href="https://github.com/pritishdash777" target="_blank" rel="noopener" class="social-link" aria-label="GitHub"><svg class="icon"><use href="#icon-github"></use></svg></a>
+          <a href="https://www.linkedin.com/in/pritish-dash-1a1a5b294/" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn"><svg class="icon"><use href="#icon-linkedin"></use></svg></a>
+          <a href="https://x.com/pritish___1" target="_blank" rel="noopener" class="social-link" aria-label="X / Twitter"><svg class="icon"><use href="#icon-twitter"></use></svg></a>
+          <a href="https://instagram.com/lovemaniaco" target="_blank" rel="noopener" class="social-link" aria-label="Instagram"><svg class="icon"><use href="#icon-instagram"></use></svg></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="index.html#features">Features</a>
+          <a href="index.html#how">How It Works</a>
+          <a href="projects.html">Explore Projects</a>
+          <a href="index.html#waitlist">Early Access</a>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="#" data-toast="This page isn\'t available yet.">Blog</a>
+          <a href="#" data-toast="This page isn\'t available yet.">Help Center</a>
+          <a href="#" data-toast="This page isn\'t available yet.">Community Guidelines</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#" data-toast="This page isn\'t available yet.">About</a>
+          <a href="#" data-toast="This page isn\'t available yet.">Contact</a>
+        </div>
+        <div class="footer-col footer-newsletter">
+          <h4>Stay in the loop</h4>
+          <p>Product updates, no spam.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="you@university.edu" required aria-label="Email address">
+            <button type="submit" aria-label="Subscribe"><svg class="icon"><use href="#icon-send"></use></svg></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="year">2026</span> hacknester. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="#" data-toast="This page isn\'t available yet.">Privacy</a>
+        <a href="#" data-toast="This page isn\'t available yet.">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg class="icon"><use href="#icon-check-circle"></use></svg>
+  <span class="toast-message"></span>
+</div>
+<button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg class="icon"><use href="#icon-arrow-up"></use></svg>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script src="projects.js"></script>
+</body>
+</html>
