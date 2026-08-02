@@ -197,7 +197,7 @@
   <script>
     const supabaseUrl = "https://yhipubroumcspclpybxz.supabase.co";
     const supabaseKey = "sb_publishable_OvHOiX9o3CPHIRqPEhvLow_JJJkCsPM";
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     // Toast helper (simple)
     function showToast(msg, type = "info") {
@@ -206,7 +206,7 @@
 
     // GitHub Login
     document.getElementById("githubBtn").addEventListener("click", async () => {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: "github",
         options: {
           redirectTo: window.location.origin + "/auth/callback.html"
@@ -226,7 +226,7 @@
       btn.disabled = true;
       btn.textContent = "Sending...";
 
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabaseClient.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: window.location.origin + "/auth/callback.html",
