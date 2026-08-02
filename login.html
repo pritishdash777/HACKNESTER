@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — hacknester</title>
+  <meta name="theme-color" content="#0b0c14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Login-specific styles that reuse your design tokens */
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+    .login-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px 60px;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    .login-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 28px;
+    }
+    .login-logo svg { width: 28px; height: 28px; }
+    .login-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .login-subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 24px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .btn-github {
+      background: #24292f;
+      color: #fff;
+      border-color: #24292f;
+    }
+    .btn-github:hover {
+      background: #32383f;
+      border-color: #32383f;
+    }
+    .login-form .form-group { margin-bottom: 16px; }
+    .login-form label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 7px;
+    }
+    .login-form input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+    }
+    .login-form input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .login-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 24px;
+      line-height: 1.5;
+    }
+    .login-note a { color: var(--accent); }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--text); }
+  </style>
+</head>
+<body class="login-page">
+
+  <!-- Minimal top bar -->
+  <header class="navbar" style="position:relative; background:transparent; border:none;">
+    <div class="container navbar-inner">
+      <a href="index.html" class="logo">
+        <svg class="logo-mark" width="30" height="30"><use href="#icon-logo"></use></svg>
+        <span>hacknester</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="login-main">
+    <div class="login-card">
+      <a href="index.html" class="back-link">
+        ← Back to home
+      </a>
+
+      <div class="login-logo">
+        <svg width="28" height="28"><use href="#icon-logo"></use></svg>
+        <span>hacknester</span>
+      </div>
+
+      <h1 class="login-title">Welcome back</h1>
+      <p class="login-subtitle">Sign in to find teammates and post projects.</p>
+
+      <!-- GitHub Button -->
+      <button type="button" id="githubBtn" class="btn btn-github btn-full btn-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.230.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        Continue with GitHub
+      </button>
+
+      <div class="divider">or</div>
+
+      <!-- Magic Link Form -->
+      <form id="magicLinkForm" class="login-form">
+        <div class="form-group">
+          <label for="email">University email</label>
+          <input type="email" id="email" placeholder="you@university.edu" required autocomplete="email">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="magicBtn">
+          Send Magic Link
+        </button>
+      </form>
+
+      <p class="login-note">
+        We’ll send a one-time login link to your university email.<br>
+        No password needed.
+      </p>
+    </div>
+  </main>
+
+  <!-- Hidden SVG sprite (same as index) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4F6DF5"/>
+        <stop offset="55%" stop-color="#22C7B8"/>
+        <stop offset="100%" stop-color="#34E5A8"/>
+      </linearGradient>
+    </defs>
+    <symbol id="icon-logo" viewBox="0 0 32 32">
+      <circle cx="16" cy="9" r="4" fill="url(#logoGrad)"/>
+      <circle cx="8" cy="23" r="4" fill="url(#logoGrad)"/>
+      <circle cx="24" cy="23" r="4" fill="url(#logoGrad)"/>
+      <path d="M16 13L9.5 19.5M16 13L22.5 19.5M11.5 23H20.5" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = "https://yhipubroumcspclpybxz.supabase.co";
+    const supabaseKey = "sb_publishable_OvHOiX9o3CPHIRqPEhvLow_JJJkCsPM";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Toast helper (simple)
+    function showToast(msg, type = "info") {
+      alert(msg); // replace with your real toast later if you want
+    }
+
+    // GitHub Login
+    document.getElementById("githubBtn").addEventListener("click", async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: window.location.origin + "/auth/callback.html"
+        }
+      });
+      if (error) showToast(error.message, "error");
+    });
+
+    // Magic Link
+    document.getElementById("magicLinkForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const btn = document.getElementById("magicBtn");
+
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin + "/auth/callback.html",
+          shouldCreateUser: true
+        }
+      });
+
+      btn.disabled = false;
+      btn.textContent = "Send Magic Link";
+
+      if (error) {
+        showToast(error.message, "error");
+      } else {
+        showToast("Check your university email for the login link!");
+        document.getElementById("magicLinkForm").reset();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -31,7 +31,33 @@ const supabaseClient = window.supabase
       timer = setTimeout(() => fn(...args), delay);
     };
   }
+async function updateAuthUI() {
+  const { data, error } = await supabase.auth.getSession();
 
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const session = data.session;
+
+  const loginBtn = document.getElementById("loginNavBtn");
+  const profileBtn = document.getElementById("profileNavBtn");
+
+  if (!loginBtn || !profileBtn) return;
+
+  if (session) {
+    loginBtn.style.display = "none";
+
+    profileBtn.style.display = "inline-flex";
+    profileBtn.textContent =
+      session.user.user_metadata.user_name ||
+      session.user.email ||
+      "Profile";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", updateAuthUI);
   // ─── Year ───────────────────────────────────────────────────────────────
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
